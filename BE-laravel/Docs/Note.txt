@@ -1,0 +1,15 @@
+1. belum ada slug, bisa ditambahkan di table migration dan model (contoh laravel-blog-api mas krisna), jangan lupa gambar juga diganti
+2. role masih belum sempurna
+
+---24/4---
+--- yang dipelajari hari ini ---
+1. penggunaan prefix dan pemahaman url
+2. penggunaan Auth controller, 
+
+--- yang perlu ditingkatkan hari ini ---
+1. konsep oop
+2. belajar logika dasar
+3. berfikir komputasi (data datang dari mana dan kenapa)
+4. pahami struktur dan arsitektur lebih dalam
+5. pelajari lagi form request 
+6. belajar lagi traits

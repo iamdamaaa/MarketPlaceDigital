@@ -1,0 +1,58 @@
+{
+    "name": "Dama",
+    "email": "dama@example.com",
+    "password": "password123",
+    "password_confirmation": "password123",
+    "role": "admin"
+}
+
+{
+    "message": "User created successfully",
+    "user": {
+        "name": "Dama",
+        "email": "dama@example.com",
+        "updated_at": "2026-04-23T19:24:50.000000Z",
+        "created_at": "2026-04-23T19:24:50.000000Z",
+        "id": 1
+    }
+}
+
+
+
+{
+    "email": "dama@example.com",
+    "password": "password123"
+}
+{
+    "success": true,
+    "message": "User logged in successfully",
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "Dama",
+            "email": "dama@example.com",
+            "role": "buyer",
+            "created_at": "2026-04-23T19:24:50.000000Z",
+            "updated_at": "2026-04-23T19:24:50.000000Z",
+            "is_active": 1
+        },
+        "token": "2|riRIa7WPz643z31kth5Ar3V0PrO397z2TtgXTfCF067bd2d4",
+        "token_type": "Bearer"
+    }
+}
+
+
+
+{
+    "success": true,
+    "message": "User data",
+    "data": {
+        "id": 1,
+        "name": "Dama",
+        "email": "dama@example.com",
+        "role": "buyer",
+        "created_at": "2026-04-23T19:24:50.000000Z",
+        "updated_at": "2026-04-23T19:24:50.000000Z",
+        "is_active": 1
+    }
+}
