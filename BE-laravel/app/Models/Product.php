@@ -3,15 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
     protected $fillable = [
+        'seller_id',
+        'category_id',
         'title', 
         'slug',
         'description',
         'price',
+        'thumbnail',
         'status',
+    ];
+
+    protected $casts = [
+        'price' => 'integer',
     ];
 
     // auto generate slug
@@ -43,7 +51,15 @@ class Product extends Model
 
     //relasi hasMany
     public function productFiles(){
-        return $this->hasMany(ProductFile::class);
+        return $this->hasMany(Product_File::class);
+    }
+
+    public function reviews(){
+        return $this->hasMany(Review::class);
+    }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
     }
 
     //relasi oneToOne

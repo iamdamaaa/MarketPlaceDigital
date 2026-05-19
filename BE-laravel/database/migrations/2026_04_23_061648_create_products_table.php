@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description');
             $table->bigInteger('price');
-            $table->enum('status', ['daft', 'pending_review', 'published', 'rejected']);
+            $table->enum('status', ['draft', 'pending_review', 'published', 'rejected']);
             $table->timestamps();
         });
     }

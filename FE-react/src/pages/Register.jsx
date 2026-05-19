@@ -1,70 +1,76 @@
 import { useState } from 'react';
-import api from '../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function Register() {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: ''
-    });
+    const [formData, setFormData] = useState({ name: '', email: '', password: '', password_confirmation: '' });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const { register } = useAuth();
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
         try {
-            // Memanggil API Register Laravel
-            const response = await api.post('/register', {
-                name: formData.name,
-                email: formData.email,
-                password: formData.password,
-                password_confirmation: formData.password_confirmation,
-                role: 'buyer' // Default role untuk mempermudah tugas
-            });
-
-            alert('Register Berhasil! Silakan Login.');
-            navigate('/login'); // Pindah ke halaman login setelah sukses
-        } catch (error) {
-            // Menampilkan error validasi dari Laravel (misal: email sudah ada)
-            const errorMsg = error.response?.data?.message || 'Terjadi kesalahan';
-            alert('Register Gagal: ' + errorMsg);
+            await register(formData);
+            navigate('/login');
+        } catch (err) {
+            const msg = err.response?.data?.message || 'Registrasi gagal.';
+            const errors = err.response?.data?.errors;
+            if (errors) {
+                const firstError = Object.values(errors)[0];
+                setError(Array.isArray(firstError) ? firstError[0] : msg);
+            } else {
+                setError(msg);
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h2>Daftar Akun Baru</h2>
-            <form onSubmit={handleRegister}>
-                <div>
-                    <label>Nama Lengkap:</label><br/>
-                    <input type="text" name="name" onChange={handleChange} required />
+        <div className="auth-page">
+            <div className="auth-card">
+                <div className="auth-brand">
+                    <div className="brand-logo">✨</div>
                 </div>
-                <br/>
-                <div>
-                    <label>Email:</label><br/>
-                    <input type="email" name="email" onChange={handleChange} required />
+                <h2>Buat Akun Baru</h2>
+                <p className="auth-subtitle">Bergabung dengan MarketPlace Digital</p>
+
+                {error && <div className="alert alert-error">{error}</div>}
+
+                <form onSubmit={handleRegister} id="register-form">
+                    <div className="form-group">
+                        <label htmlFor="name">Nama Lengkap</label>
+                        <input id="name" name="name" type="text" placeholder="Masukkan nama lengkap" onChange={handleChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="reg-email">Email</label>
+                        <input id="reg-email" name="email" type="email" placeholder="nama@email.com" onChange={handleChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="reg-password">Password</label>
+                        <input id="reg-password" name="password" type="password" placeholder="Minimal 8 karakter" onChange={handleChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="reg-password-confirm">Konfirmasi Password</label>
+                        <input id="reg-password-confirm" name="password_confirmation" type="password" placeholder="Ulangi password" onChange={handleChange} required />
+                    </div>
+                    <button type="submit" className="btn-submit" disabled={loading}>
+                        {loading ? 'Memproses...' : 'Daftar Sekarang'}
+                    </button>
+                </form>
+
+                <div className="auth-footer">
+                    Sudah punya akun? <Link to="/login">Masuk</Link>
                 </div>
-                <br/>
-                <div>
-                    <label>Password:</label><br/>
-                    <input type="password" name="password" onChange={handleChange} required />
-                </div>
-                <br/>
-                <div>
-                    <label>Konfirmasi Password:</label><br/>
-                    <input type="password" name="password_confirmation" onChange={handleChange} required />
-                </div>
-                <br/>
-                <button type="submit">Daftar Sekarang</button>
-            </form>
+            </div>
         </div>
     );
 }

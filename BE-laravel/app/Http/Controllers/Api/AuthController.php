@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,13 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register (Request $request): JsonResponse
+    use ApiResponse;
+
+    /**
+     * POST /api/auth/register
+     * Register a new user
+     */
+    public function register(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -38,11 +45,20 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user,
+            'success' => true,
+            'message' => 'User registered successfully',
+            'data' => [
+                'user' => $user,
+                'token' => $token,
+                'token_type' => 'Bearer',
+            ]
         ], 201);
     }
 
+    /**
+     * POST /api/auth/login
+     * Login user and return Bearer token
+     */
     public function login(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -62,6 +78,13 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if (!$user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Account is deactivated. Please contact support.',
+            ], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -75,9 +98,13 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+     * POST /api/auth/logout
+     * Logout user (invalidate current token)
+     */
     public function logout(Request $request): JsonResponse
     {
-        //hapus semua token
+        //hapus token saat ini
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
@@ -86,11 +113,15 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+     * GET /api/auth/me
+     * Get authenticated user data
+     */
     public function me(Request $request): JsonResponse
     {
         return response()->json([
             'success' => true,
-            'message' => 'User data',
+            'message' => 'User data retrieved',
             'data' => $request->user(),
         ]);
     }
